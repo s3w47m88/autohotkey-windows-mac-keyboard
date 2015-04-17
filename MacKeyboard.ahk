@@ -1,57 +1,50 @@
-;-----------------------------------------
-; Mac keyboard to Windows Key Mappings
-;=========================================
-
-; --------------------------------------------------------------
+﻿; --------------------------------------------------------------
 ; NOTES
 ; --------------------------------------------------------------
 ; ! = ALT
 ; ^ = CTRL
 ; + = SHIFT
 ; # = WIN
-;
-; Debug action snippet: MsgBox You pressed Control-A while Notepad is active.
 
-#InstallKeybdHook
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#NoTrayIcon
 #SingleInstance force
+
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 SetTitleMatchMode 2
-SendMode Input
 
+; Reverse Scrolling
+WheelUp::
+Send {WheelDown}
+Return
+		
+WheelDown::
+Send {WheelUp}
+Return
 
-; --------------------------------------------------------------
-; media/function keys all mapped to the right option key
-; --------------------------------------------------------------
+;-----------------------------------------
+; Apple keyboard to Windows Key Mappings
+;=========================================
+;^::!
+Alt::Ctrl						
 
-RAlt & F7::SendInput {Media_Prev}
-RAlt & F8::SendInput {Media_Play_Pause}
-RAlt & F9::SendInput {Media_Next}
-F10::SendInput {Volume_Mute}
-F11::SendInput {Volume_Down}
-F12::SendInput {Volume_Up}
+; Media/function keys all mapped to Windows Key + F-Key (Fn key is un-mappable, as far as I know...)
+F5::SendInput {Media_Prev}
+F6::SendInput {Media_Play_Pause}
+F7::SendInput {Media_Next}
+F1::SendInput {Volume_Mute}
+F2::SendInput {Volume_Down}
+F3::SendInput {Volume_Up}
 
-; swap left command/windows key with left alt
-;LWin::LAlt
-;LAlt::LWin ; add a semicolon in front of this line if you want to disable the windows key
+; "Disables" left windows key. Helpful for gaming, so if accidentaly hit it, it won't open the start menu and kick you out of the game.
+; LWin::LAlt
 
-; Eject Key
-F20::SendInput {Insert}
+; Show Desktop with Windows Key + F3
+; #F3::#d
+;^ & Tab::^d
 
-; F13-15, standard windows mapping
-F13::SendInput {PrintScreen}
-F14::SendInput {ScrollLock}
-F15::SendInput {Pause}
-
-;F16-19 custom app launchers, see http://www.autohotkey.com/docs/Tutorial.htm for usage info
-F16::Run http://twitter.com
-F17::Run http://tumblr.com
-F18::Run http://www.reddit.com
-F19::Run https://facebook.com
-
-; --------------------------------------------------------------
-; OS X system shortcuts
-; --------------------------------------------------------------
-
-; Make Ctrl + S work with cmd (windows) key
+; Saving
 #s::^s
 
 ; Selecting
@@ -81,92 +74,33 @@ F19::Run https://facebook.com
 ; New tab
 #t::^t
 
+; Undo Tab
+#+T::^+t
+
 ; close tab
 #w::^w
 
+; reload page
+#r::^r
+
 ; Close windows (cmd + q to Alt + F4)
-#q::Send !{F4}
+#q::Send !q
+
+; Open Find & Replace
+#f::^f
+
+; In Find & Replace Navigate to the Next Item
+#g::^g
 
 ; Remap Windows + Tab to Alt + Tab.
-Lwin & Tab::AltTab
+;Lwin & Tab::AltTab ;This is broken in windows 8... AHK is working on a fix, for now, use the below alternative or use Emcee app and configure Alt Tab to be the Expose.
+;LWin & Tab::Send !{ESC}
 
 ; minimize windows
-#m::WinMinimize,a
+;#m::WinMinimize,a
 
-
-; --------------------------------------------------------------
-; OS X keyboard mappings for special chars
-; --------------------------------------------------------------
-
-; Map Alt + L to @
-!l::SendInput {@}
-
-; Map Alt + N to \
-+!7::SendInput {\}
-
-; Map Alt + N to ©
-!g::SendInput {©}
-
-; Map Alt + o to ø
-!o::SendInput {ø}
-
-; Map Alt + 5 to [
-!5::SendInput {[}
-
-; Map Alt + 6 to ]
-!6::SendInput {]}
-
-; Map Alt + E to €
-!e::SendInput {€}
-
-; Map Alt + - to –
-!-::SendInput {–}
-
-; Map Alt + 8 to {
-!8::SendInput {{}
-
-; Map Alt + 9 to }
-!9::SendInput {}}
-
-; Map Alt + - to ±
-!+::SendInput {±}
-
-; Map Alt + R to ®
-!r::SendInput {®}
-
-; Map Alt + N to |
-!7::SendInput {|}
-
-; Map Alt + W to ∑
-!w::SendInput {∑}
-
-; Map Alt + N to ~
-!n::SendInput {~}
-
-
-; --------------------------------------------------------------
-; Custom mappings for special chars
-; --------------------------------------------------------------
-
-#ö::SendInput {[} 
-#ä::SendInput {]} 
-
-^ö::SendInput {{} 
-^ä::SendInput {}} 
-
-
-; --------------------------------------------------------------
-; Application specific
-; --------------------------------------------------------------
-
-; Google Chrome
-#IfWinActive, ahk_class Chrome_WidgetWin_1
-
-; Show Web Developer Tools with cmd + alt + i
-#!i::Send {F12}
-
-; Show source code with cmd + alt + u
-#!u::Send ^u
-
+#IfWinActive ahk_class ConsoleWindowClass
+^V::
+SendInput {Raw}%clipboard%
+return
 #IfWinActive
-
